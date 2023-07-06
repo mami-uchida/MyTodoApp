@@ -53,9 +53,34 @@ class _TodoListPageState extends State<TodoListPage> {
               children: [
                 SlidableAction(
                   onPressed: ( _ ) {
-                    setState(() { 
-                      todoList.remove(todoList[index]);
-                    });
+                    showDialog(
+                      context: context,
+                      builder: (_){
+                        return AlertDialog(
+                          title: const Column(
+                            children: [
+                              Icon(Icons.warning, size: 50, color: Colors.orange),
+                              Text('本当に削除しますか？'),
+                            ],
+                          ),
+
+
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                setState(() => todoList.remove(todoList[index]));
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('キャンセル'),
+                              onPressed: ()  => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      },
+                    ); 
                   },
                   backgroundColor: Colors.red,
                   icon: Icons.delete,
