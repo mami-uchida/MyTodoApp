@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+
 void main() {
   // 最初に表示するWidget
   runApp(MyTodoApp());
@@ -63,14 +64,16 @@ class _TodoListPageState extends State<TodoListPage> {
                               Text('本当に削除しますか？'),
                             ],
                           ),
-
-
                           actions: <Widget>[
                             TextButton(
                               child: const Text('OK'),
                               onPressed: () {
                                 setState(() => todoList.remove(todoList[index]));
-                                Navigator.of(context).pop();
+                                const snackBar = SnackBar(
+                                  content: Text('削除しました'),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  Navigator.of(context).pop();
                               },
                             ),
                             TextButton(
