@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 
 void main() {
   // 最初に表示するWidget
@@ -39,18 +41,64 @@ class _TodoListPageState extends State<TodoListPage> {
     return Scaffold(
       // AppBarを表示し、タイトルも設定
       appBar: AppBar(
-        title: Text('リスト一覧'),
+        title: const Text('リスト一覧'),
       ),
       // データを元にListViewを作成
       body: ListView.builder(
         itemCount: todoList.length,
         itemBuilder: (context, index) {
-          return Card(
-            child: ListTile(
-              title: Text(todoList[index]),
+          return Slidable(
+            endActionPane: ActionPane(
+              motion: const StretchMotion(),
+              extentRatio: 0.20,
+              children: [
+                SlidableAction(
+                  onPressed: ( _ ) {
+                    showDialog(
+                      context: context,
+                      builder: (_){
+                        return AlertDialog(
+                          title: const Column(
+                            children: [
+                              Icon(Icons.warning, size: 50, color: Colors.orange),
+                              Text('本当に削除しますか？'),
+                            ],
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                setState(() => todoList.remove(todoList[index]));
+                                const snackBar = SnackBar(
+                                  content: Text('削除しました'),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('キャンセル'),
+                              onPressed: ()  => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      },
+                    ); 
+                  },
+                  backgroundColor: Colors.red,
+                  icon: Icons.delete,
+                  label: '削除',
+                ),
+              ],
+            ),
+            child: Card(
+              child: ListTile(
+                title: Text(todoList[index]),
+              ),
             ),
           );
         },
+        
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -70,7 +118,7 @@ class _TodoListPageState extends State<TodoListPage> {
             });
           }
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
